@@ -67,10 +67,10 @@ def segment_audio(audio_path, output_dir):
     
     script_dir = os.path.dirname(os.path.abspath(__file__))
     output_dir = os.path.join(script_dir, "audio_chunks")
-    os.makedirs(output_dir, exist_ok=True)  # Ensure the directory exists
+    os.makedirs(output_dir, exist_ok=True)
     
     audio_filename = os.path.basename(audio_path).replace('.wav', '')
-    start_times = sorted(transcript_dict.keys())  # Sorted list of segment start times
+    start_times = sorted(transcript_dict.keys())
     
     for i, start_time in enumerate(start_times):
         end_time = start_times[i + 1] if i + 1 < len(start_times) else None
@@ -86,11 +86,17 @@ def segment_audio(audio_path, output_dir):
 def analyze_segment_sentiment(transcript_dict):
     sentiment_results = {}
 
+    conversion = {
+        "LABEL_0": "negative",
+        "LABEL_1": "neutral",
+        "LABEL_2": "positive"
+    }
+
     for start_time, text in transcript_dict.items():
         sentiment = sentiment_pipeline(text)[0]
         sentiment_results[start_time] = {
             "text": text,
-            "sentiment": sentiment['label'],  # 0 = negative, 1 = neutral, 2 = positive
+            "sentiment": conversion.get(sentiment['label'], "unknown"),  # 0 = negative, 1 = neutral, 2 = positive
             "score": sentiment['score']  
         }
 
@@ -101,8 +107,6 @@ def convert_dataframe(sentiment_results, video_name, first_sentiment_results=Non
     results_folder = os.path.join(script_dir, "transcripts")
     os.makedirs(results_folder, exist_ok=True)
 
-    #rename csv file so that it takes the last 4 digits of the first video name and the last 4 digits of the last video name
-    csv_filename = os.path.join(results_folder, f"{video_name}_analysis.csv")
     # convert sentiment_results to a list of dictionaries so that the row follows per timestamp 
     data = [
         {
@@ -120,6 +124,9 @@ def convert_dataframe(sentiment_results, video_name, first_sentiment_results=Non
         for entry in data:
             closest_timestamp = min(first_timestamps, key=lambda t: abs(t - entry["timestamp"]))
             entry["timestamp"] = closest_timestamp 
+    else:
+        #taking name of first video OR first 4 and last 4 charas.. ayways
+        csv_filename = os.path.join(results_folder, f"{video_name[-8:-4]}_analysis.csv")
 
     df = pd.DataFrame(data)
     
