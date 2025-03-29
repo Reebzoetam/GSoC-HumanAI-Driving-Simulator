@@ -5,6 +5,7 @@ import whisper
 from transformers import pipeline
 import tensorflow as tf
 import keras
+import pandas as pd
 
 model = whisper.load_model('medium')
 transcript_dict = {}
@@ -30,6 +31,8 @@ def process_video(video_file):
     for timestamp, data in sentiment_data.items():
         print(f"At {timestamp:.2f}s: {data['text']}")
         print(f"  Sentiment: {data['sentiment']} (Confidence: {data['score']:.2f})")
+    df = convert_dataframe(sentiment_data, video_file)
+    print(df)
     return transcript
 
 # since whisper returns the transcribed text by segments already, we will just store them in a dictionary and
@@ -62,7 +65,8 @@ def store_segments(transcript):
 def segment_audio(audio_path, output_dir):
     global transcript_dict
     
-    output_dir = "/Users/rebeccatam/Downloads/GSoC/audio_chunks/"
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    output_dir = os.path.join(script_dir, "audio_chunks")
     os.makedirs(output_dir, exist_ok=True)  # Ensure the directory exists
     
     audio_filename = os.path.basename(audio_path).replace('.wav', '')
@@ -92,6 +96,39 @@ def analyze_segment_sentiment(transcript_dict):
 
     return sentiment_results
 
+def convert_dataframe(sentiment_results, video_name, first_sentiment_results=None):
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    results_folder = os.path.join(script_dir, "transcripts")
+    os.makedirs(results_folder, exist_ok=True)
+
+    #rename csv file so that it takes the last 4 digits of the first video name and the last 4 digits of the last video name
+    csv_filename = os.path.join(results_folder, f"{video_name}_analysis.csv")
+    # convert sentiment_results to a list of dictionaries so that the row follows per timestamp 
+    data = [
+        {
+            "timestamp": timestamp,
+            "text": details["text"],
+            "sentiment": details["sentiment"],
+            "score": details["score"]
+        }
+        for timestamp, details in sentiment_results.items()
+    ]
+
+    if first_sentiment_results:
+        first_timestamps = list(first_sentiment_results.keys())
+
+        for entry in data:
+            closest_timestamp = min(first_timestamps, key=lambda t: abs(t - entry["timestamp"]))
+            entry["timestamp"] = closest_timestamp 
+
+    df = pd.DataFrame(data)
+    
+    if os.path.exists(csv_filename):
+        df.to_csv(csv_filename, mode='a', header=False, index=False) 
+    else:
+        df.to_csv(csv_filename, index=False)
+
+
 def process_multiple_videos(video_urls):
     transcripts = {}
     for file in video_files:
@@ -109,3 +146,8 @@ if __name__ == '__main__':
     #for link, transcript in transcripts.items():
         #print(f"Transcript for {link}:")
         #print(transcript)
+
+#TODO: generate multiple file reading system to process multiple files at once
+# ensure that file paths are compatible with any users' system
+# get rid of the fp16 warning omg
+# ensure that documentation is written for all libraries imported
