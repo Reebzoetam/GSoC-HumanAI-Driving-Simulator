@@ -3,8 +3,6 @@ import tempfile
 import ffmpeg
 import whisper
 from transformers import pipeline
-import tensorflow as tf
-import keras
 import pandas as pd
 
 model = whisper.load_model('medium')
@@ -13,6 +11,10 @@ MAX_SEGMENT_DURATION = 5.0
 sentiment_pipeline = pipeline("text-classification", model="cardiffnlp/twitter-roberta-base-sentiment")
 
 def extract_audio(video_path, output_dir):
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    output_dir = os.path.join(script_dir, "audios")
+    os.makedirs(output_dir, exist_ok=True)
+    
     audio_path = os.path.join(output_dir, os.path.basename(video_path).replace('.mp4', '.wav'))
     ffmpeg.input(video_path).output(audio_path, format='wav', acodec='pcm_s16le', ar='16000').run(overwrite_output=True)
     return audio_path
@@ -162,7 +164,3 @@ if __name__ == '__main__':
     script_dir = os.path.dirname(os.path.abspath(__file__))
     folder_path = os.path.join(script_dir, folder_name)
     transcripts = process_multiple_videos(folder_path)
-
-#TODO: 
-# get rid of the fp16 warning omg
-# ensure that documentation is written for all libraries imported
