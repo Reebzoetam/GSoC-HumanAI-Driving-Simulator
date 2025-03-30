@@ -18,8 +18,8 @@ def test_segment_lengths():
         
         assert duration <= MAX_SEGMENT_DURATION, f"Segment from {start_time:.2f}s exceeds max duration ({duration:.2f}s)"
 
+# test for correct csv output
 def test_analyze_segment_sentiment(sample_transcript):
-    """Test if the CSV file is correctly saved with the expected format and values."""
     video_name = "test_video"
     csv_filename = f"/Users/rebeccatam/Downloads/GSoC/transcripts/{video_name}.csv"
 
