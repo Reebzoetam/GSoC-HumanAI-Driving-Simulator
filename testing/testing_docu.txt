@@ -43,3 +43,37 @@ Checked again.
 
 DATA_MANIPULATION.PY
 
+Testing create_time_buckets(transcript_path):
+
+oh.. this is a big one. First began by taking the latest timestamp and incrementing by 5 seconds to create 
+entries in the time_buckets list for each time bucket increment. Then parsed through the csv file generated
+by the previous script line by line to see if the timestamp fell within the time bucket time.
+To test, I once again.. printed time_buckets to see if the correct timestamp in the mm:ss format corresponded
+to the correct phrases.
+
+I also wanted to count the number of positive, neutral, negative sentiment occurences for each time bucket. 
+As I parsed through the original csv file, I counted the sentiment results and averaged the confidence scores
+corresponding to each sentiment. To test, I printed data, and checked the lengths of each key to ensure that
+no values were omitted. I also indexed a few entries just to check if it corresponded with the original csv file.
+There's always a good chance I shifted data entries around by an index or two.
+
+The overall code is quite ugly and could honestly be much more elegant (all those for loops and if statements..)
+but it was most readable for me that way so I could debug things. I hope to write more elegant and efficient code
+in the future.
+
+Testing plot_histogram(csv_filename):
+
+Displayed plot. Did it show correct values in the desired way knowing what data we have? 
+Did it display it in a readable manner? If yes, move on. If not, tweak the code until it does.
+
+Testing plot_sentiment(csv_filename):
+
+Slightly more complicated than plot_histogram. I first plotted the stacked bars by colour based on sentiment counts 
+for each time bucket. Once that display was satisfactory, I moved onto an additional feature I wanted to add.
+
+I also wanted to add a gradient based on what the average confidence
+score was for each positive, neutral, negative sentiment result was. So I had to normalize the confidence scores first
+and use cmap to adjust the intensity of the colour of each stacked bar based on the confidence score. 
+If there were multiple sentiments of the same sentiment value, I averaged them.
+I also displayed the gradients to the right of the graph as a legend for users to understand how high 
+each confidence score was for each sentiment.
