@@ -137,25 +137,32 @@ def convert_dataframe(sentiment_results, video_name, first_sentiment_results=Non
         df.to_csv(csv_filename, index=False)
 
 
-def process_multiple_videos(video_urls):
+def process_multiple_videos(video_folder):
     transcripts = {}
-    for file in video_files:
-        try:
-            transcripts[file] = process_video(file)
-            print(f"Processed: {file}")
-        except Exception as e:
-            print(f"Error processing {file}: {e}")
+    try:
+        video_files = [f for f in os.listdir(video_folder) if f.endswith('.mp4')]
+            
+        for file in video_files:
+            video_path = os.path.join(video_folder, file)
+            try:
+                transcripts[file] = process_video(video_path)
+                print(f"Processed: {file}")
+            except Exception as e:
+                print(f"Error processing {file}: {e}")
+                    
+    except Exception as e:
+        print(f"Error accessing the folder {video_folder}: {e}")
+            
     return transcripts
 
 if __name__ == '__main__':
     # insert function to convert file to string of video.mp4 files eventually
-    video_files = ['/Users/rebeccatam/Downloads/GSoC/Experimenter_CREW_999_1_All_1731617801.mp4']
-    transcripts = process_multiple_videos(video_files)
-    #for link, transcript in transcripts.items():
-        #print(f"Transcript for {link}:")
-        #print(transcript)
+    #rename as needed
+    folder_name = "video_files"
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    folder_path = os.path.join(script_dir, folder_name)
+    transcripts = process_multiple_videos(folder_path)
 
-#TODO: generate multiple file reading system to process multiple files at once
-# ensure that file paths are compatible with any users' system
+#TODO: 
 # get rid of the fp16 warning omg
 # ensure that documentation is written for all libraries imported
