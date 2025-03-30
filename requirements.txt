@@ -1,1 +1,9 @@
+python-ffmpeg-video-streamer: 
+- used to extract the audio from the file and save as wav file for processing
+- also used to segment the audio into chunks based on the transcription segmentation
 
+openai-whisper: 
+- used to transcribe the audio
+
+hugging face transformer: https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment, model = twitter-roberta-base-sentiment
+- used to classify the sentiment of the transcribed text phrase by phrase
