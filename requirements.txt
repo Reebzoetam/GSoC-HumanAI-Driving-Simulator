@@ -1,9 +1,42 @@
+for data_handling.py:
+
 python-ffmpeg-video-streamer: 
-- used to extract the audio from the file and save as wav file for processing
-- also used to segment the audio into chunks based on the transcription segmentation
+- used to extract the audio from the file and save as wav file for processing in extract_audio()
+- also used to segment the audio into chunks based on the transcription segmentation in segment_audio()
 
 openai-whisper: 
-- used to transcribe the audio
+- used to transcribe the audio in transcribe_audio()
+- and to generate timestamps relating to each transcribed phrase
 
 hugging face transformer: https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment, model = twitter-roberta-base-sentiment
-- used to classify the sentiment of the transcribed text phrase by phrase
+- used to classify the sentiment of the transcribed text phrase by phrase in analyze_segment_sentiment()
+- as well as obtain confidence scores for each sentiment classification
+- chose this transformer because it was trained on tweets, which are similar to natural human speech
+
+tempfile:
+- used to create a temporary directory to store the audio chunks and transcriptions in process_video()
+
+for data_manipulation.py:
+
+pandas:
+- used to manipulate the dataframes to append timestamp, text, and sentiment values to each bucket in create_time_buckets()
+- save the final dataframe as a csv file
+
+matplotlib:
+- used to plot histogram and sentiment bar graph in plot_histogram() and plot_sentiment()
+- matplotlib.cm: used to generate a color map for the sentiment bar graph and color bar
+- matplotlib.colors: used to normalize confidence level scores and map confidence values to colours
+
+LIMITATIONS/CONSIDERATIONS:
+for data_handling.py:
+- unsure about the accuracy of the transcription model, sometimes whisper doesnt pick up on certain words
+- processing could probably be faster, but im new to this so whisper was the easiest way for me to achieve the goals
+- currently only expects .mp4 files in the folder.. anything else will break it (what other file format would you use???)
+
+for data_manipulation.py:
+- i added zero padding to the first index and last index of data["positive_count"], data["neutral_count"], ... data["negative_conf"], 
+based on what I deduced to be the cause of the mismatch in dimension between the "time_bucket"/"word_count" and "positive_count".. etc. keys in data.
+the first and last index of the time_bucket ranges did not contain text and thus had no sentiment values. so 0 is an accurate reflection. 
+this is a temporary fix, and I would recommend checking the data to ensure that the zero padding accurately reflects the sentiment count for other files.
+- the legend/colour map for the confidence levels is ugly but no matter how much I fiddle around with the spacing I can't fix it
+- GREEN is positive, RED is negative, and GREY is neutral sentiment! my labels are messed up so it doesn't show
