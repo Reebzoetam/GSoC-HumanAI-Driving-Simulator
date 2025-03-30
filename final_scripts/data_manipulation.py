@@ -1,7 +1,6 @@
 import pandas as pd
 import os
 import matplotlib.pyplot as plt
-import numpy as np
 import matplotlib.cm as cm
 import matplotlib.colors as mcolors
 
@@ -120,9 +119,8 @@ def plot_sentiment(csv_filename):
     df = pd.read_csv(csv_filename)
     df['time_bucket'] = df['time_bucket'].astype(str)
 
-    # Normalize confidence scores to range [0.2, 1]
     def normalize(series):
-        return 0.2 + 0.8 * (series - series.min()) / (series.max() - series.min() + 1e-9)  # Avoid div by zero
+        return 0.2 + 0.8 * (series - series.min()) / (series.max() - series.min() + 1e-9)
 
     df['positive_alpha'] = normalize(df['positive_conf'])
     df['neutral_alpha'] = normalize(df['neutral_conf'])
@@ -130,12 +128,10 @@ def plot_sentiment(csv_filename):
 
     plt.figure(figsize=(14, 7))
 
-    # Define colormaps for opacity gradient (Green, Red, Gray)
     cmap_positive = cm.get_cmap('Greens')
     cmap_negative = cm.get_cmap('Reds')
     cmap_neutral = cm.get_cmap('Greys')
 
-    # Stacking bars dynamically
     for i, row in df.iterrows():
         plt.bar(row['time_bucket'], row['positive_count'], 
                 color=cmap_positive(row['positive_alpha']), alpha=row['positive_alpha'], label="Positive" if i == 0 else "")
