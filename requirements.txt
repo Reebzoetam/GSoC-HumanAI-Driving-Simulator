@@ -1,28 +1,29 @@
 for data_handling.py:
 
-python-ffmpeg-video-streamer: 
+ffmpeg-python==0.2.0:
 - used to extract the audio from the file and save as wav file for processing in extract_audio()
 - also used to segment the audio into chunks based on the transcription segmentation in segment_audio()
 
-openai-whisper: 
+openai-whisper==20240930: 
 - used to transcribe the audio in transcribe_audio()
 - and to generate timestamps relating to each transcribed phrase
 
 hugging face transformer: https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment, model = twitter-roberta-base-sentiment
+transformers==4.50.3
 - used to classify the sentiment of the transcribed text phrase by phrase in analyze_segment_sentiment()
 - as well as obtain confidence scores for each sentiment classification
 - chose this transformer because it was trained on tweets, which are similar to natural human speech
 
-tempfile:
+tempfile - preinstalled:
 - used to create a temporary directory to store the audio chunks and transcriptions in process_video()
 
 for data_manipulation.py:
 
-pandas:
+pandas==1.5.3:
 - used to manipulate the dataframes to append timestamp, text, and sentiment values to each bucket in create_time_buckets()
 - save the final dataframe as a csv file
 
-matplotlib:
+matplotlib==3.7.1:
 - used to plot histogram and sentiment bar graph in plot_histogram() and plot_sentiment()
 - matplotlib.cm: used to generate a color map for the sentiment bar graph and color bar
 - matplotlib.colors: used to normalize confidence level scores and map confidence values to colours
