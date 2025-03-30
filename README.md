@@ -1,6 +1,6 @@
 # GSoC-HumanAI-Driving-Simulator
 
-## A brief introduction
+## A Brief Introduction
 
 This github respository serves as the deliverables for the Data Handling & Analysis and Data Understanding & Manipulation tasks assigned by HumanAI as a screener for their Communication Analysis Tool for Human-AI Interaction Driving Simulator Experiments – Screening Test Google Summer of Code Project.
 
@@ -13,7 +13,7 @@ The second file, [data_manipulation.py](/final_scripts/data_manipulation.py), ta
 2) plot_sentiment() generates a stacked bar graph of the number of sentiment counts of each type (green = positive, grey = neutral, red = negative) within each 5 second time bucket, as visualised using the plot below. The intensity of each bar colour shows the confidence score of the sentiment analysis obtained from the model.
 ![Saved stacked bar graph plot of sentiment counts at each time bucket](/results/plots/sentiment_plot.png)
 
-## How to run the files
+## How to Run the Files
 
 1) Ensure you have all necessary libaries and dependencies before running the code in this repository. The required libraries can be found [here](/requirements.txt).
 2) Download data_handling.py and data_manipulation.py from the [final_scripts folder](/final_scripts/) into the same directory. 
@@ -21,7 +21,13 @@ The second file, [data_manipulation.py](/final_scripts/data_manipulation.py), ta
 4) Run data_handling.py first to obtain a csv file from your folder of .mp4 videos with all the necessary data to run data_manipulation.py. This csv file will be named after the last 4 characters of your first video file and end with "_analysis.csv". This will appear in a newly generated folder in the same directory called "transcripts". data_handling.py also automatically prints the contents of the transcript and the timestamps into the output for your convenience. .wav files for each corresponding .mp4 video file will also appear in a newly generated folder in the same directory called "audios".
 5) Run data_manipulation.py. This will take your newly generated csv file and create another csv file in the "transcripts" folder containing the time_bucket, word_count... negative_conf values. The histogram and stacked bar chart plots mentioned previously will also appear as a pop up.
 
-## Repository documentation
+## Challenges
+
+The primary challenge presented in this screener was ensuring proper data manipulation in data_manipulation.py. A great number of hours were needed to debug the dictionary/list parsing steps and ensure that the proper indexed values were passed on in proper order to the dataframe. There were many print statements that had to be used to diagnose the issue as the number of entries in data[time_bucket] and data[positive_count] were often misaligned, leading to an inability to use dataframes. I hope to be able to program additional diagnostic tests and scripts to diganose data misalignments in the future for cases like these to further improve my debugging capabilities.
+
+Additionally, ensuring that the data was presented in a readable plot was also a challenge. I have only primarily used matplotlib to plot data directly, so exploring new matplotlib features such as the colour map for the first time presented an interesting learning curve. I hope to be able to improve my skills with programming data presentation in the future.
+
+## Repository Documentation
 This was built in python using ffmpeg for video to audio conversion, openapi's whisper for audio transcription, huggingface's transformer model for sentiment analysis, and matplotlib for data visualisation. More details about the various libraries and apis used can be found in the requirements.txt file [here](/requirements.txt).
 
 All information on testing can be found in the testing folder. In particular, the testing documentation can be found 
