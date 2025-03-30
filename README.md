@@ -6,11 +6,11 @@ This github respository serves as the deliverables for the Data Handling & Analy
 
 The first file, [data_handling.py](/final_scripts/data_handling.py), takes in a folder of .mp4 video files and converts them into a csv file containing timestamped transcriptions with sentiment values of positive, negative, or neutral attached to each phrase.
 
-The second file, [data_manipulation.py](/final_scripts/data_manipulation.py), takes in the previously generated csv file, using its timestamp, text, sentiment, and confidence score values to associate word count and sentiment value with time buckets of 5 seconds (ex: 00:05-00:10). This data was then graphed in two ways. 
+The second file, [data_manipulation.py](/final_scripts/data_manipulation.py), takes in the previously generated csv file, using its timestamp, text, sentiment, and confidence score values to associate word count and sentiment value with time buckets of 5 seconds (ex: 00:05-00:10). This data was then graphed in two ways:
 
-plot_histogram() generates a histogram of the number of words/strings that appear within each 5 second time bucket, as visualised below using data from an example .mp4 video. ![Saved histogram plot of word counts at each time bucket](/results/plots/histogram_plot.png)
+1) plot_histogram() generates a histogram of the number of words/strings that appear within each 5 second time bucket, as visualised below using data from an example .mp4 video. ![Saved histogram plot of word counts at each time bucket](/results/plots/histogram_plot.png)
 
-plot_sentiment() generates a stacked bar graph of the number of sentiment counts of each type (green = positive, grey = neutral, red = negative) within each 5 second time bucket, as visualised using the plot below. The intensity of each bar colour shows the confidence score of the sentiment analysis obtained from the model.
+2) plot_sentiment() generates a stacked bar graph of the number of sentiment counts of each type (green = positive, grey = neutral, red = negative) within each 5 second time bucket, as visualised using the plot below. The intensity of each bar colour shows the confidence score of the sentiment analysis obtained from the model.
 ![Saved stacked bar graph plot of sentiment counts at each time bucket](/results/plots/sentiment_plot.png)
 
 ## How to run the files
