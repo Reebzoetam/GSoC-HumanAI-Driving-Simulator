@@ -111,6 +111,9 @@ def plot_histogram(csv_filename):
     plt.title("Word Count per Time Bucket")
     plt.xticks(rotation=45)
     plt.tight_layout()
+
+    plt.savefig("histogram_plot.png", format="png", bbox_inches="tight")
+
     plt.show()
 
 def plot_sentiment(csv_filename):
@@ -163,12 +166,14 @@ def plot_sentiment(csv_filename):
     plt.colorbar(sm3, cax=cbar_ax3, label="Confidence", ticks=[0.2, 0.6, 1])
 
     plt.tight_layout()
+
+    plt.savefig("sentiment_plot.png", format="png", bbox_inches="tight")
     plt.show()
 
 if __name__ == '__main__':
     transcript_name ='7801_analysis.csv'
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    transcript_path = os.path.join(script_dir, transcript_name)
+    transcript_path = os.path.join(script_dir, 'transcripts', transcript_name)
     data_points = create_time_buckets(transcript_path)
     plot_histogram(data_points)
     plot_sentiment(data_points)
