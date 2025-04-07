@@ -4,9 +4,9 @@ import ffmpeg
 import whisper
 from transformers import pipeline
 import pandas as pd
+from pydub import AudioSegment, silence
 
 model = whisper.load_model('medium')
-transcript_dict = {}
 MAX_SEGMENT_DURATION = 5.0
 sentiment_pipeline = pipeline("text-classification", model="cardiffnlp/twitter-roberta-base-sentiment")
 
@@ -19,74 +19,94 @@ def extract_audio(video_path, output_dir):
     ffmpeg.input(video_path).output(audio_path, format='wav', acodec='pcm_s16le', ar='16000').run(overwrite_output=True)
     return audio_path
 
-def transcribe_audio(audio_path):
-    result = model.transcribe(audio_path, word_timestamps=True)
-    return result
+def transcribe_audio(chunks, timestamps):
+    model = whisper.load_model('medium')
+    
+    transcripts = {
+        'start': [],
+        'segments': [],
+    }
+
+    for chunk, timestamp in zip(chunks, timestamps):
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as temp_file:
+            temp_audio_path = temp_file.name
+            chunk.export(temp_audio_path, format='wav')
+            result = model.transcribe(temp_audio_path)
+            print(result)
+            if not result.get('text', '').strip():
+                print("Skipping empty transcription.")
+                continue
+            # may need to write a script to adjust this dynamically as needed depending on video quality
+            if result['segments'][0]['no_speech_prob'] < 0.7:
+                transcripts['segments'].append(result['text'])
+                transcripts['start'].append(timestamp)
+            os.remove(temp_audio_path)
+    print(transcripts)
+    return transcripts
+
 
 def process_video(video_file):
     with tempfile.TemporaryDirectory() as temp_dir:
         audio_path = extract_audio(video_file, temp_dir)
-        transcript = transcribe_audio(audio_path)
-        store_segments(transcript)
-        segment_audio(audio_path, temp_dir)
-        sentiment_data = analyze_segment_sentiment(transcript_dict)
-    for timestamp, data in sentiment_data.items():
-        print(f"At {timestamp:.2f}s: {data['text']}")
-        print(f"  Sentiment: {data['sentiment']} (Confidence: {data['score']:.2f})")
+        chunks, timestamps = segment_audio(audio_path)
+        transcript = transcribe_audio(chunks, timestamps)
+        sentiment_data = analyze_segment_sentiment(transcript)
+    for data in sentiment_data:
+        print(data)
+        print(f"At {data['timestamp']:.2f}s: {data['text']}")
+        print(f"Sentiment: {data['sentiment']} (Confidence: {data['score']:.2f})")
     df = convert_dataframe(sentiment_data, video_file)
     print(df)
     return transcript
 
-# since whisper returns the transcribed text by segments already, we will just store them in a dictionary and
-# segment the audio based on those timestamps
-def store_segments(transcript):
-    global transcript_dict
-    print("Storing segments...")
-    for segment in transcript['segments']:
-        start_time = segment['start']
-        end_time = segment['end']
-        text = segment['text']
-        words = segment['words']
+def segment_audio(audio_path):
 
-        if end_time - start_time <= MAX_SEGMENT_DURATION:
-            transcript_dict[start_time] = text
+    MAX_CHUNK_LENGTH = 5 * 1000
+    overlap = 0
+
+    audio = AudioSegment.from_wav(audio_path)
+    nonsilent_ranges = silence.detect_nonsilent(
+    audio,
+    min_silence_len=500, 
+    # to detect silence levels, will need to consider the volume levels of future audio clips, 
+    # or find a way to normalise volume
+    # this video has very low volume at times, but idk about future videos
+    silence_thresh=audio.dBFS - 20, 
+    )
+
+    final_chunks = []
+    timestamps = []
+    print(nonsilent_ranges)
+    for start_ms, end_ms in nonsilent_ranges:
+        print(start_ms, end_ms)
+        if start_ms >=200:
+            overlap = 200
         else:
-            sub_text = []
-            sub_start = start_time
-
-            for word in words:
-                sub_text.append(word['word'])
-                if word['end'] - sub_start >= MAX_SEGMENT_DURATION:
-                    transcript_dict[sub_start] = " ".join(sub_text)
-                    sub_text = []
-                    sub_start = word['end']
-            if sub_text:
-                transcript_dict[sub_start] = " ".join(sub_text)
-    print(transcript_dict)
-
-def segment_audio(audio_path, output_dir):
-    global transcript_dict
-    
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    output_dir = os.path.join(script_dir, "audio_chunks")
-    os.makedirs(output_dir, exist_ok=True)
-    
-    audio_filename = os.path.basename(audio_path).replace('.wav', '')
-    start_times = sorted(transcript_dict.keys())
-    
-    for i, start_time in enumerate(start_times):
-        end_time = start_times[i + 1] if i + 1 < len(start_times) else None
-        output_file = os.path.join(output_dir, f"{audio_filename}_segment_{i + 1}.wav")
-        
-        if end_time:
-            ffmpeg.input(audio_path, ss=start_time, to=end_time).output(output_file, format='wav').run(overwrite_output=True)
+            overlap = 0
+        chunk_start = start_ms - overlap
+        chunk = audio[chunk_start:end_ms]
+        # other potential chunking options include increasing the sensitvity to silence instead of 
+        # every 5 seconds
+        if len(chunk) > MAX_CHUNK_LENGTH:
+            for i in range(0, len(chunk), MAX_CHUNK_LENGTH - overlap):
+                subchunk = chunk[i:i + MAX_CHUNK_LENGTH]
+                actual_start = chunk_start + i
+                final_chunks.append(subchunk)
+                timestamps.append(actual_start / 1000.0)
         else:
-            ffmpeg.input(audio_path, ss=start_time).output(output_file, format='wav').run(overwrite_output=True)
-        
-        print(f"Saved segment: {output_file} [{start_time:.2f}s - {end_time if end_time else 'end'}s]")
+            final_chunks.append(chunk)
+            timestamps.append(chunk_start / 1000.0)
+
+    print(f"Total chunks: {len(final_chunks)}")
+    print(f"Timestamps (s): {[round(ts, 2) for ts in timestamps]}")
+
+    return final_chunks, timestamps
 
 def analyze_segment_sentiment(transcript_dict):
-    sentiment_results = {}
+    print("Analyzing sentiment...")
+    print(len(transcript_dict['segments']))
+    print(len(transcript_dict['start']))
+    sentiment_results = []
 
     conversion = {
         "LABEL_0": "negative",
@@ -94,44 +114,37 @@ def analyze_segment_sentiment(transcript_dict):
         "LABEL_2": "positive"
     }
 
-    for start_time, text in transcript_dict.items():
+    for i in range(len(transcript_dict['start'])):
+        start_time = transcript_dict['start'][i]
+        text = transcript_dict['segments'][i]
         sentiment = sentiment_pipeline(text)[0]
-        sentiment_results[start_time] = {
+        sentiment_results.append({
+            "timestamp": start_time,
             "text": text,
             "sentiment": conversion.get(sentiment['label'], "unknown"),  # 0 = negative, 1 = neutral, 2 = positive
             "score": sentiment['score']  
-        }
+        })
 
     return sentiment_results
 
 def convert_dataframe(sentiment_results, video_name, first_sentiment_results=None):
+    print("Converting to DataFrame...")
     script_dir = os.path.dirname(os.path.abspath(__file__))
     results_folder = os.path.join(script_dir, "transcripts")
     os.makedirs(results_folder, exist_ok=True)
-
-    # convert sentiment_results to a list of dictionaries so that the row follows per timestamp 
-    data = [
-        {
-            "timestamp": timestamp,
-            "text": details["text"],
-            "sentiment": details["sentiment"],
-            "score": details["score"]
-        }
-        for timestamp, details in sentiment_results.items()
-    ]
 
     #consider also: videos that are longer than the initial max length of the first video
     if first_sentiment_results:
         first_timestamps = list(first_sentiment_results.keys())
 
-        for entry in data:
+        for entry in sentiment_results:
             closest_timestamp = min(first_timestamps, key=lambda t: abs(t - entry["timestamp"]))
             entry["timestamp"] = closest_timestamp 
     else:
         #taking name of first video OR first 4 and last 4 charas.. ayways
         csv_filename = os.path.join(results_folder, f"{video_name[-8:-4]}_analysis.csv")
 
-    df = pd.DataFrame(data)
+    df = pd.DataFrame(sentiment_results)
     
     if os.path.exists(csv_filename):
         df.to_csv(csv_filename, mode='a', header=False, index=False) 
