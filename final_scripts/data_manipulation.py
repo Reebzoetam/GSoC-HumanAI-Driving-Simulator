@@ -3,13 +3,17 @@ import os
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import matplotlib.colors as mcolors
+import tkinter as tk
+from tkinter import filedialog, messagebox
+import sys
 
-def create_time_buckets(transcript_path):
+def create_time_buckets(transcript_path, output_path):
     df = pd.read_csv(transcript_path)
     df = df.dropna(subset=["timestamp"])
     df["text"] = df["text"].str.strip()
     # filter out empty text rows
     df = df[df["text"].notna() & (df["text"] != '')]
+    df = df.sort_values(by="timestamp").reset_index(drop=True)
     max_time = int(df.iloc[-1]["timestamp"])
 
     data = {
@@ -92,16 +96,12 @@ def create_time_buckets(transcript_path):
 
     df = pd.DataFrame(data)
 
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    results_folder = os.path.join(script_dir, "transcripts")
-    os.makedirs(results_folder, exist_ok=True)
-
-    csv_filename = os.path.join(results_folder, f"{transcript_path}_histogram.csv")
+    csv_filename = os.path.join(output_path, f"{transcript_path}_histogram.csv")
     df.to_csv(csv_filename, index=False)
     print(f"Saved time bucket data to {csv_filename}")
     return csv_filename
 
-def plot_histogram(csv_filename):
+def plot_histogram(csv_filename, output_path):
     df = pd.read_csv(csv_filename)
     plt.figure(figsize=(20, 6))
     plt.bar(df["time_bucket"], df["word_count"])
@@ -111,11 +111,11 @@ def plot_histogram(csv_filename):
     plt.xticks(rotation=45)
     plt.tight_layout()
 
-    plt.savefig("histogram_plot.png", format="png", bbox_inches="tight")
+    plt.savefig(os.path.join(output_path, "histogram_plot.png"), format="png", bbox_inches="tight")
 
     plt.show()
 
-def plot_sentiment(csv_filename):
+def plot_sentiment(csv_filename, output_path):
     df = pd.read_csv(csv_filename)
     df['time_bucket'] = df['time_bucket'].astype(str)
 
@@ -159,17 +159,33 @@ def plot_sentiment(csv_filename):
 
     cbar_ax3 = plt.gca().inset_axes([1.12, 0.2, 0.03, 0.4])
     sm3 = cm.ScalarMappable(cmap=cmap_neutral, norm=mcolors.Normalize(vmin=0.2, vmax=1))
-    plt.colorbar(sm3, cax=cbar_ax3, label="Confidence", ticks=[0.2, 0.6, 1])
+    plt.colorbar(sm3, cax=cbar_ax3, label="Intensity", ticks=[0.2, 0.6, 1])
 
     plt.tight_layout()
 
-    plt.savefig("sentiment_plot.png", format="png", bbox_inches="tight")
+    plt.savefig(os.path.join(output_path, "sentiment_plot.png"), format="png", bbox_inches="tight")
     plt.show()
 
+def select_input():
+    root = tk.Tk()
+    root.withdraw()
+
+    messagebox.showinfo("Input File", "Select a csv file to process.")
+    path = filedialog.askopenfilename(title="Select a csv file to process")
+
+    messagebox.showinfo("Output Folder", "Now select a folder where you want to save the output files.")
+    output_path = filedialog.askdirectory(title="Select Output Folder")
+    if not output_path:
+        print("No output folder selected.")
+        sys.exit(0)
+
+    if path:
+        data_points = create_time_buckets(path, output_path)
+        plot_histogram(data_points, output_path)
+        plot_sentiment(data_points, output_path)
+    else:
+        print("No selection made.")
+        sys.exit(0)
+
 if __name__ == '__main__':
-    transcript_name ='7801_analysis.csv'
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    transcript_path = os.path.join(script_dir, 'transcripts', transcript_name)
-    data_points = create_time_buckets(transcript_path)
-    plot_histogram(data_points)
-    plot_sentiment(data_points)
+    select_input()
