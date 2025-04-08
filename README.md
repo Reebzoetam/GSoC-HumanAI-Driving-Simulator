@@ -16,7 +16,7 @@ The second file, [data_manipulation.py](/final_scripts/data_manipulation.py), ta
 ## QoL features
 - Upon running the code, a simple GUI will pop up to select input files/folder and output folder directly from your machine
 - Multi-file processing for multiple files in the same folder
-- Multiple file format conversion to .wav files that include .mp4, .mov, .avi, .mp3, .wav, .avi, etc.
+- Multiple file format conversion capability to .wav files that include .mp4, .mov, .avi, .mp3, .wav, .avi, etc.
 
 ## How to Run the Files
 
