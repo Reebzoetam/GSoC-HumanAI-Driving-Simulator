@@ -4,14 +4,14 @@
 
 This github respository serves as the deliverables for the Data Handling & Analysis and Data Understanding & Manipulation tasks assigned by HumanAI as a screener for their Communication Analysis Tool for Human-AI Interaction Driving Simulator Experiments – Screening Test Google Summer of Code Project.
 
-The first file, [data_handling.py](/final_scripts/data_handling.py), takes in a folder of .mp4 video files and converts them into a csv file containing timestamped transcriptions with sentiment values of positive, negative, or neutral attached to each phrase.
+The first file, [data_handling.py](/final_scripts/data_handling.py), takes in a folder of .mp4 video files, converts them into a .wav audio file, chunks them using pydub's AudioSegment based on periods of silence in the audio, and converts the chunks into a csv file containing timestamped transcriptions with sentiment values of positive, negative, or neutral attached to each phrase. These sentiment values also had a 'score' attached to them, depending on how intensely positive/negative/neutral the sentiment was.
 
 The second file, [data_manipulation.py](/final_scripts/data_manipulation.py), takes in the previously generated csv file, using its timestamp, text, sentiment, and confidence score values to associate word count and sentiment value with time buckets of 5 seconds (ex: 00:05-00:10). This data was then graphed in two ways:
 
-1) plot_histogram() generates a histogram of the number of words/strings that appear within each 5 second time bucket, as visualised below using data from an example .mp4 video. ![Saved histogram plot of word counts at each time bucket](/results/plots/histogram_plot.png)
+1) plot_histogram() generates a histogram of the number of words/strings that appear within each 5 second time bucket, as visualised below using data from an example .mp4 video. ![Saved histogram plot of word counts at each time bucket](/results/plots/histogram_plot2.png)
 
-2) plot_sentiment() generates a stacked bar graph of the number of sentiment counts of each type (green = positive, grey = neutral, red = negative) within each 5 second time bucket, as visualised using the plot below. The intensity of each bar colour shows the confidence score of the sentiment analysis obtained from the model.
-![Saved stacked bar graph plot of sentiment counts at each time bucket](/results/plots/sentiment_plot.png)
+2) plot_sentiment() generates a stacked bar graph of the number of sentiment counts of each type (green = positive, grey = neutral, red = negative) within each 5 second time bucket, as visualised using the plot below. The intensity of each bar colour shows the intensity of the sentiment analysis obtained from the model. For example, if a bar was green, the closer the chunk the bar was representing to an intense positive sentiment, the more intensely green the bar would be, as seen on the gradient scales to the right of this image.
+![Saved stacked bar graph plot of sentiment counts at each time bucket](/results/plots/sentiment_plot2.png)
 
 ## How to Run the Files
 
@@ -27,8 +27,10 @@ The primary challenge presented in this screener was ensuring proper data manipu
 
 Additionally, ensuring that the data was presented in a readable plot was also a challenge. I have only primarily used matplotlib to plot data directly, so exploring new matplotlib features such as the colour map for the first time presented an interesting learning curve. I hope to be able to improve my skills with programming data presentation in the future.
 
+Finally, a great deal of time was also invested into fine tuning the parameters for chunking based on silence, whisper's transcription, and sentiment analysis. This involved tweaking multiple parameters such as the silence threshold, silence length, providing a prompt for whisper, changing the threshold for no_speech_prob with whisper's transcription, and changing the threshold values for positive/negative/neutral sentiment identifications based on previous results.
+
 ## Repository Documentation
-This was built in python using ffmpeg for video to audio conversion, openapi's whisper for audio transcription, huggingface's transformer model for sentiment analysis, and matplotlib for data visualisation. More details about the various libraries and apis used can be found in the requirements.txt file [here](/requirements.txt).
+This was built in python using ffmpeg for video to audio conversion, pydub for chunking based on silence, openapi's whisper for audio transcription, Vader NLP for more fine-grained sentiment analysis, and matplotlib for data visualisation. More details about the various libraries and apis used can be found in the requirements.txt file [here](/requirements.txt).
 
 All information on testing can be found in the testing folder. In particular, the testing documentation can be found 
 [here](/testing/testing_docu.txt).
