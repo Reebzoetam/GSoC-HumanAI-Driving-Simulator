@@ -31,7 +31,15 @@ def transcribe_audio(chunks, timestamps):
         with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as temp_file:
             temp_audio_path = temp_file.name
             chunk.export(temp_audio_path, format='wav')
-            result = model.transcribe(temp_audio_path)
+
+            result = model.transcribe(
+            temp_audio_path, 
+            language='en', 
+            fp16=False, 
+            initial_prompt="This is audio between six participants in a simulated driving environment as they collaborate and communicate as a team to navigate through the simulation.", 
+            condition_on_previous_text=False
+            )
+
             print(result)
             if not result.get('text', '').strip():
                 print("Skipping empty transcription.")
@@ -85,8 +93,8 @@ def segment_audio(audio_path):
             overlap = 0
         chunk_start = start_ms - overlap
         chunk = audio[chunk_start:end_ms]
-        # other potential chunking options include increasing the sensitvity to silence instead of 
-        # every 5 seconds
+        # other potential chunking options include calling silence.detect_nonsilent again
+        # and increasing the sensitvity to silence instead of every 5 seconds
         if len(chunk) > MAX_CHUNK_LENGTH:
             for i in range(0, len(chunk), MAX_CHUNK_LENGTH - overlap):
                 subchunk = chunk[i:i + MAX_CHUNK_LENGTH]
