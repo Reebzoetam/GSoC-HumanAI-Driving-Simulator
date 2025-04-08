@@ -4,6 +4,9 @@ ffmpeg-python==0.2.0:
 - used to extract the audio from the file and save as wav file for processing in extract_audio()
 - also used to segment the audio into chunks based on the transcription segmentation in segment_audio()
 
+pydub==0.25.1:
+- used to segment audio into chunks based on silence
+
 openai-whisper==20240930: 
 - used to transcribe the audio in transcribe_audio()
 - and to generate timestamps relating to each transcribed phrase
