@@ -6,6 +6,11 @@ import pandas as pd
 from pydub import AudioSegment, silence
 import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+import tkinter as tk
+from tkinter import filedialog, messagebox
+import sys
+import shutil
+
 nltk.download('vader_lexicon')
 
 model = whisper.load_model('medium')
@@ -13,12 +18,31 @@ MAX_SEGMENT_DURATION = 5.0
 sentiment_analyzer = SentimentIntensityAnalyzer()
 
 def extract_audio(video_path, output_dir):
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    output_dir = os.path.join(script_dir, "audios")
+    if output_dir is None:
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        output_dir = os.path.join(script_dir, "audios")
     os.makedirs(output_dir, exist_ok=True)
-    
-    audio_path = os.path.join(output_dir, os.path.basename(video_path).replace('.mp4', '.wav'))
-    ffmpeg.input(video_path).output(audio_path, format='wav', acodec='pcm_s16le', ar='16000').run(overwrite_output=True)
+
+    base_name = os.path.splitext(os.path.basename(video_path))[0]
+    audio_path = os.path.join(output_dir, f"{base_name}.wav")
+
+    # for more dynamic audio extraction
+    if video_path.lower().endswith('.wav'):
+        print("File is already a WAV — copying without reprocessing.")
+        shutil.copy(video_path, audio_path)
+        return audio_path
+
+    try:
+        ffmpeg.input(video_path).output(
+            audio_path,
+            format='wav',
+            acodec='pcm_s16le',
+            ar='16000' 
+        ).run(overwrite_output=True)
+    except ffmpeg.Error as e:
+        print("Error during audio extraction:", e)
+        return None
+
     return audio_path
 
 def transcribe_audio(chunks, timestamps):
@@ -55,7 +79,7 @@ def transcribe_audio(chunks, timestamps):
     return transcripts
 
 
-def process_video(video_file):
+def process_video(video_file, output_path):
     with tempfile.TemporaryDirectory() as temp_dir:
         audio_path = extract_audio(video_file, temp_dir)
         chunks, timestamps = segment_audio(audio_path)
@@ -65,7 +89,7 @@ def process_video(video_file):
         print(data)
         print(f"At {data['timestamp']:.2f}s: {data['text']}")
         print(f"Sentiment: {data['sentiment']} (Score: {data['score']:.2f})")
-    df = convert_dataframe(sentiment_data, video_file)
+    df = convert_dataframe(sentiment_data, video_file, output_path)
     print(df)
     return transcript
 
@@ -142,14 +166,10 @@ def analyze_segment_sentiment(transcript_dict):
 
     return sentiment_results
 
-def convert_dataframe(sentiment_results, video_name):
+def convert_dataframe(sentiment_results, video_name, output_path):
     print("Converting to DataFrame...")
-    
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    results_folder = os.path.join(script_dir, "transcripts")
-    os.makedirs(results_folder, exist_ok=True)
 
-    csv_filename = os.path.join(results_folder, f"{video_name[-8:-4]}_analysis.csv")
+    csv_filename = os.path.join(output_path, f"{video_name[-8:-4]}_analysis.csv")
 
     df = pd.DataFrame(sentiment_results)
 
@@ -158,7 +178,7 @@ def convert_dataframe(sentiment_results, video_name):
     else:
         df.to_csv(csv_filename, index=False)
 
-def process_multiple_videos(video_folder):
+def process_multiple_videos(video_folder, output_path):
     transcripts = {}
     try:
         video_files = [f for f in os.listdir(video_folder) if f.endswith('.mp4')]
@@ -166,7 +186,7 @@ def process_multiple_videos(video_folder):
         for file in video_files:
             video_path = os.path.join(video_folder, file)
             try:
-                transcripts[file] = process_video(video_path)
+                transcripts[file] = process_video(video_path, output_path)
                 print(f"Processed: {file}")
             except Exception as e:
                 print(f"Error processing {file}: {e}")
@@ -174,12 +194,38 @@ def process_multiple_videos(video_folder):
     except Exception as e:
         print(f"Error accessing the folder {video_folder}: {e}")
             
-    return transcripts
+    return transcripts, output_path
+
+def select_input():
+    root = tk.Tk()
+    root.withdraw()
+
+    choice = messagebox.askyesno("Select Input Type", "Do you want to select a folder?\nClick 'No' to choose a file instead.")
+
+    if choice:
+        path = filedialog.askdirectory(title="Select a Folder")
+        selection = "folder"
+    else:
+        selection = "file"
+        path = filedialog.askopenfilename(title="Select a File")
+
+    output_path = filedialog.askdirectory(title="Select Output Folder")
+    if not output_path:
+        print("No output folder selected.")
+        sys.exit(0)
+
+    if path:
+        if selection == "folder":
+            process_multiple_videos(path, output_path)
+            print("Input selected:", path)
+            print("Output folder selected:", output_path)
+        else:
+            process_video(path, output_path)
+            print("Input selected:", path)
+            print("Output folder selected:", output_path)
+    else:
+        print("No selection made.")
+        sys.exit(0)
 
 if __name__ == '__main__':
-    # insert function to convert file to string of video.mp4 files eventually
-    #rename as needed
-    folder_name = "video_files"
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    folder_path = os.path.join(script_dir, folder_name)
-    transcripts = process_multiple_videos(folder_path)
+    folder_name = select_input()
