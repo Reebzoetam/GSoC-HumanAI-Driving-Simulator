@@ -13,6 +13,11 @@ The second file, [data_manipulation.py](/final_scripts/data_manipulation.py), ta
 2) plot_sentiment() generates a stacked bar graph of the number of sentiment counts of each type (green = positive, grey = neutral, red = negative) within each 5 second time bucket, as visualised using the plot below. The intensity of each bar colour shows the intensity of the sentiment analysis obtained from the model. For example, if a bar was green, the closer the chunk the bar was representing to an intense positive sentiment, the more intensely green the bar would be, as seen on the gradient scales to the right of this image.
 ![Saved stacked bar graph plot of sentiment counts at each time bucket](/results/plots/sentiment_plot2.png)
 
+## QoL features
+- Upon running the code, a simple GUI will pop up to select input files/folder and output folder directly from your machine
+- Multi-file processing for multiple files in the same folder
+- Multiple file format conversion to .wav files that include .mp4, .mov, .avi, .mp3, .wav, .avi, etc.
+
 ## How to Run the Files
 
 1) Ensure you have all necessary libaries and dependencies before running the code in this repository. The required libraries can be found [here](/requirements.txt).
