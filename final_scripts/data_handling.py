@@ -2,13 +2,15 @@ import os
 import tempfile
 import ffmpeg
 import whisper
-from transformers import pipeline
 import pandas as pd
 from pydub import AudioSegment, silence
+import nltk
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+nltk.download('vader_lexicon')
 
 model = whisper.load_model('medium')
 MAX_SEGMENT_DURATION = 5.0
-sentiment_pipeline = pipeline("text-classification", model="cardiffnlp/twitter-roberta-base-sentiment")
+sentiment_analyzer = SentimentIntensityAnalyzer()
 
 def extract_audio(video_path, output_dir):
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -62,7 +64,7 @@ def process_video(video_file):
     for data in sentiment_data:
         print(data)
         print(f"At {data['timestamp']:.2f}s: {data['text']}")
-        print(f"Sentiment: {data['sentiment']} (Confidence: {data['score']:.2f})")
+        print(f"Sentiment: {data['sentiment']} (Score: {data['score']:.2f})")
     df = convert_dataframe(sentiment_data, video_file)
     print(df)
     return transcript
@@ -75,7 +77,7 @@ def segment_audio(audio_path):
     audio = AudioSegment.from_wav(audio_path)
     nonsilent_ranges = silence.detect_nonsilent(
     audio,
-    min_silence_len=500, 
+    min_silence_len=300, 
     # to detect silence levels, will need to consider the volume levels of future audio clips, 
     # or find a way to normalise volume
     # this video has very low volume at times, but idk about future videos
@@ -110,55 +112,51 @@ def segment_audio(audio_path):
 
     return final_chunks, timestamps
 
+def get_sentiment_label(compound):
+    # typical threshold values according to VADER sentiment documentation are usually 0.5, -0.5
+    # but these are adjusted to 0.2 and -0.2 based on results from previous runs
+    if compound >= 0.2:
+        return "positive"
+    elif compound <= -0.2:
+        return "negative"
+    else:
+        return "neutral"
+
 def analyze_segment_sentiment(transcript_dict):
     print("Analyzing sentiment...")
-    print(len(transcript_dict['segments']))
-    print(len(transcript_dict['start']))
     sentiment_results = []
-
-    conversion = {
-        "LABEL_0": "negative",
-        "LABEL_1": "neutral",
-        "LABEL_2": "positive"
-    }
 
     for i in range(len(transcript_dict['start'])):
         start_time = transcript_dict['start'][i]
         text = transcript_dict['segments'][i]
-        sentiment = sentiment_pipeline(text)[0]
+        sentiment = sentiment_analyzer.polarity_scores(text)
+        compound = sentiment['compound']
+        sentiment_label = get_sentiment_label(compound)
+        
         sentiment_results.append({
             "timestamp": start_time,
             "text": text,
-            "sentiment": conversion.get(sentiment['label'], "unknown"),  # 0 = negative, 1 = neutral, 2 = positive
-            "score": sentiment['score']  
+            "sentiment": sentiment_label,
+            "score": compound
         })
 
     return sentiment_results
 
-def convert_dataframe(sentiment_results, video_name, first_sentiment_results=None):
+def convert_dataframe(sentiment_results, video_name):
     print("Converting to DataFrame...")
+    
     script_dir = os.path.dirname(os.path.abspath(__file__))
     results_folder = os.path.join(script_dir, "transcripts")
     os.makedirs(results_folder, exist_ok=True)
 
-    #consider also: videos that are longer than the initial max length of the first video
-    if first_sentiment_results:
-        first_timestamps = list(first_sentiment_results.keys())
-
-        for entry in sentiment_results:
-            closest_timestamp = min(first_timestamps, key=lambda t: abs(t - entry["timestamp"]))
-            entry["timestamp"] = closest_timestamp 
-    else:
-        #taking name of first video OR first 4 and last 4 charas.. ayways
-        csv_filename = os.path.join(results_folder, f"{video_name[-8:-4]}_analysis.csv")
+    csv_filename = os.path.join(results_folder, f"{video_name[-8:-4]}_analysis.csv")
 
     df = pd.DataFrame(sentiment_results)
-    
+
     if os.path.exists(csv_filename):
-        df.to_csv(csv_filename, mode='a', header=False, index=False) 
+        df.to_csv(csv_filename, mode='a', header=False, index=False)
     else:
         df.to_csv(csv_filename, index=False)
-
 
 def process_multiple_videos(video_folder):
     transcripts = {}
