@@ -17,6 +17,12 @@ ntlk==3.8.1:
 tempfile - preinstalled:
 - used to create a temporary directory to store the audio chunks and transcriptions in process_video()
 
+tkinter - preinstalled:
+- used to create a simple GUI for users to select input files/folder and output folder
+
+shutil - preinstalled:
+- copy and move files that are already in the .wav format
+
 for data_manipulation.py:
 
 pandas==1.5.3:
@@ -27,6 +33,9 @@ matplotlib==3.7.1:
 - used to plot histogram and sentiment bar graph in plot_histogram() and plot_sentiment()
 - matplotlib.cm: used to generate a color map for the sentiment bar graph and color bar
 - matplotlib.colors: used to normalize confidence level scores and map confidence values to colours
+
+tkinter - preinstalled:
+- used to create a simple GUI for users to select input files/folder and output folder
 
 LIMITATIONS/CONSIDERATIONS:
 for data_handling.py:
