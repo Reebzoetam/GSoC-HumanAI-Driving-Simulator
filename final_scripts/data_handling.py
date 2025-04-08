@@ -12,8 +12,6 @@ import sys
 import shutil
 
 nltk.download('vader_lexicon')
-
-model = whisper.load_model('medium')
 MAX_SEGMENT_DURATION = 5.0
 sentiment_analyzer = SentimentIntensityAnalyzer()
 
@@ -181,7 +179,7 @@ def convert_dataframe(sentiment_results, video_name, output_path):
 def process_multiple_videos(video_folder, output_path):
     transcripts = {}
     try:
-        video_files = [f for f in os.listdir(video_folder) if f.endswith('.mp4')]
+        video_files = [f for f in os.listdir(video_folder)]
             
         for file in video_files:
             video_path = os.path.join(video_folder, file)
@@ -209,6 +207,7 @@ def select_input():
         selection = "file"
         path = filedialog.askopenfilename(title="Select a File")
 
+    messagebox.showinfo("Output Folder", "Now select a folder where you want to save the output files.")
     output_path = filedialog.askdirectory(title="Select Output Folder")
     if not output_path:
         print("No output folder selected.")
@@ -216,13 +215,13 @@ def select_input():
 
     if path:
         if selection == "folder":
+            print("Input selected:", path)
+            print("Output folder selected:", output_path)
             process_multiple_videos(path, output_path)
-            print("Input selected:", path)
-            print("Output folder selected:", output_path)
         else:
-            process_video(path, output_path)
             print("Input selected:", path)
             print("Output folder selected:", output_path)
+            process_video(path, output_path)
     else:
         print("No selection made.")
         sys.exit(0)
