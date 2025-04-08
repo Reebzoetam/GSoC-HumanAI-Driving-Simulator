@@ -1,119 +1,65 @@
 timestamp,text,sentiment,score
-9.360000000000001, Okay.,neutral,0.5830911993980408
-9.8, So the driver you're going to completely use the vehicle automation and the object detection,neutral,0.8663018941879272
-13.4, system so that means you will not need to operate the vehicle.,neutral,0.7402619123458862
-16.36, You should keep your hands off the steering wheel and feet off the pedals once we begin,neutral,0.7448111176490784
-19.36, that drive.,neutral,0.6362851858139038
-20.1, Okay.,neutral,0.5830911993980408
-20.7," So when you see that SIM driver indicator highlight green, make sure you don't hit the",neutral,0.7371411919593811
-24.04, brake at any point during the drive.,neutral,0.720312237739563
-26.060000000000002, At this drive the car cab lookout will have the ODS for getting visual feedback for targets,neutral,0.9205461144447327
-30.66, that are in the environment so the car cab lookout should pay attention to that screen,neutral,0.831965982913971
-34.28, to aid them when you're going out to drive the mission.,neutral,0.8760718703269958
-37.04, Remember to tap the targets on that ODS as well as completing those workstation tasks.,neutral,0.8410651683807373
-45.92, Alright so all drivers put your foot on the brake.,neutral,0.7681795358657837
-49.58, Do not remove your foot from the brake until I instruct you to remove it.,neutral,0.7442254424095154
-53.18, Car cab driver you may start the car.,neutral,0.882336437702179
-57.62, All drivers with your foot still on the brake.,neutral,0.8151969909667969
-59.96, Keep it on the brake and do not start yet.,neutral,0.7426745891571045
-63.28, You drove through me.,neutral,0.7022292613983154
-69.1, Car cab driver.,neutral,0.6840261816978455
-75.85999999999999, Go back.,neutral,0.7059178948402405
-78.0, Car cab driver and only the car cab driver.,neutral,0.8217153549194336
-80.32, Yes.,positive,0.496074378490448
-81.8, Make sure everyone is in drive.,neutral,0.6647554636001587
-86.34, I am now in drive.,neutral,0.8328525424003601
-87.6, Car cab driver and only the car cab driver.,neutral,0.8217153549194336
-90.46, Maybe get moving forward.,neutral,0.7001314163208008
-95.08, As I drove through him.,neutral,0.8361420035362244
-96.34, Desktop drivers you may remove your foot.,neutral,0.8406088352203369
-99.68, We now have SIM driver on.,neutral,0.8601040840148926
-102.78, Looking at the person on the scooter.,neutral,0.8361960649490356
-108.18, What color scooter?,neutral,0.847046971321106
-109.84, Crossbody bag.,neutral,0.6343578696250916
-111.0, Crossbody bag.,neutral,0.6343578696250916
-113.34, Scooter?,neutral,0.7483198046684265
-114.28, Yeah it has a crossbody bag.,neutral,0.7939561605453491
-119.84, It's driving.,neutral,0.7037941217422485
-121.26, I'm not having to get on the scooter.,neutral,0.6192098259925842
-126.48, I see scooters on both sides of the road.,neutral,0.7723905444145203
-129.62, Nope not this one.,negative,0.48479121923446655
-132.0, Yeah it's like an electric scooter.,neutral,0.6752777099609375
-134.68, Ah yeah that's the scooter.,neutral,0.7069809436798096
-135.42, That's on the left side of the road.,neutral,0.8339049220085144
-137.58, Yeah I saw her on the left.,neutral,0.8566920161247253
-138.72, Passing now.,neutral,0.7832106947898865
-140.64, Yeah that was correct.,positive,0.5520551800727844
-150.02000000000004, Do we have any target?,neutral,0.8693103790283203
-153.38, Not yet.,neutral,0.6623117923736572
-154.72, I hit target identified but.,neutral,0.720591127872467
-157.2, Okay.,neutral,0.5830911993980408
-161.42, Those motorcyclists were giving me.,neutral,0.5797465443611145
-162.94, There's a car.,neutral,0.7343581914901733
-164.6, That's kind of beat up.,negative,0.9274144172668457
-166.04, There's boxes on the roof.,neutral,0.7695867419242859
-168.72, Passing. Oh I see it's at 10 o'clock.,neutral,0.8773719072341919
-171.32, Okay.,neutral,0.5830911993980408
-172.3, I think he's on the left side.,neutral,0.8866932988166809
-175.78, Yeah I saw her on the right.,neutral,0.8709476590156555
-177.8, Passing now.,neutral,0.7832106947898865
-179.84, Yeah we're also passing now.,neutral,0.8598936200141907
-181.54, Car 1.,neutral,0.6801180839538574
-188.66, Why is car 3 so far behind car 2?,neutral,0.5379664897918701
-193.01999999999998, I don't know.,neutral,0.5787386894226074
-195.26, Yeah.,neutral,0.5595693588256836
-208.92, There's a target gap.,neutral,0.7115203738212585
-212.64, Is the ODS working?,neutral,0.83977210521698
-215.02, Yes.,positive,0.496074378490448
-215.62, Sometimes it has a green button there.,neutral,0.8152669072151184
-217.88, It says identified.,neutral,0.6562385559082031
-220.38, No you won't see anything.,neutral,0.5035349726676941
-221.92, But Jack you should see something in the passenger seat.,neutral,0.8080422878265381
-224.62, If the ODS is parking.,neutral,0.6871674656867981
-226.2, There should be a wide car right now.,neutral,0.8000617027282715
-228.46, I see a green button here.,neutral,0.8040884733200073
-230.3, Wide car.,neutral,0.7275263071060181
-231.72, SUV like 2.,neutral,0.6697703003883362
-232.86, Now we're looking at a white stand.,neutral,0.823403000831604
-236.16, Or SUV.,neutral,0.729121208190918
-237.04, SUV.,neutral,0.7461943626403809
-237.58, I  see  a,neutral,0.679982602596283
-242.72, camel.,neutral,0.6453028917312622
-248.9, We got cars coming up.,neutral,0.7412014603614807
-250.24, Oh I think I saw that.,neutral,0.7446970343589783
-251.78, There's a driving white car on the left.,neutral,0.8883053660392761
-255.36, Yeah.,neutral,0.5595693588256836
-255.84, A driving car on the left.,neutral,0.8587487936019897
-258.46, But he's not.,neutral,0.5296947360038757
-259.92, Passing now. I think that was it.,neutral,0.8477998375892639
-262.46,,neutral,0.45127245783805847
-263.48, We have another white SUV.,neutral,0.85689377784729
-267.66, And...,neutral,0.7415665984153748
-267.76, Yeah. Passing that one on the left now.,neutral,0.8794236183166504
-284.74, Passing military checkpoint.,neutral,0.7944847941398621
-290.0, There's a truck.,neutral,0.7479234933853149
-292.9, And there's a tank on the truck.,neutral,0.7061858773231506
-298.24, Yeah.,neutral,0.5595693588256836
-300.24, Yeah.,neutral,0.5595693588256836
-314.64, I'm not sure.,neutral,0.6959088444709778
-315.6,,neutral,0.45127245783805847
-316.24, Yeah.,neutral,0.5595693588256836
-316.52, Yeah.,neutral,0.5595693588256836
-319.38, Yeah.,neutral,0.5595693588256836
-319.86, I think it's...,neutral,0.7930342555046082
-322.34, How about you Commander?,neutral,0.827091634273529
-324.16, I think it's enough.,positive,0.5394402146339417
-325.18, I mean I'm having fun.,positive,0.8597591519355774
-326.22, But we can stop if you want to.,neutral,0.7783539295196533
-329.1, Okay.,neutral,0.5830911993980408
-330.3, Yeah. We can kill it.,neutral,0.5364224314689636
-331.68, Alright. So...,neutral,0.8158836960792542
-334.32, All drivers...,neutral,0.7350972890853882
-336.6, Will...,neutral,0.8043348789215088
-337.32, Put your foot on the brake.,neutral,0.6636711359024048
-339.78, Commander braking now.,neutral,0.6893109679222107
-348.24, Please don't run through me.,negative,0.552153468132019
-349.56, No.,neutral,0.4887547492980957
-351.4, We've been rear-ended.,neutral,0.6162006258964539
-354.62, In park now.,neutral,0.6952494978904724
-356.84, Good job team.,positive,0.9300727844238281
+5.191, Thank you.,positive,0.3612
+8.529," Okay, so the drive you're going to complete will use the equal automation and the object detection system.",positive,0.2263
+18.129, Okay.,positive,0.2263
+22.929," Make sure you don't hit the brake at any point during the drive. With this drive, the car can have a look out.",positive,0.3182
+27.729, The car cab will look out for the ODS for getting visual feedback for targets that are in the environment. The car cab will look out for the ODS for getting visual feedback for targets that are in the environment.,neutral,0.0
+32.529, You should pay attention to that screen to aid them and everyone else during the mission. Remember to tap on the screen to see the video.,neutral,-0.1027
+37.329, Tap the targets on that ODS.,neutral,0.0
+39.053, As well as completing those workstation tasks.,positive,0.2732
+45.639, All right so all drivers put your foot on the brake. Do not remove your foot from the brake.,neutral,0.0
+50.439, I will start the break until I instruct you to remove it.,neutral,0.0
+53.167, Car cab driver you may start the car.,neutral,0.0
+57.967, All drivers with your foot still on the brake. You've been on the brake and you're not starting yet.,neutral,0.0
+62.767, You drove through me!,neutral,0.0
+67.567, Car cab driver.,neutral,0.0
+75.377, Go back. Hard cap driver and only the hard cap driver.,negative,-0.2023
+80.177, Yes.,positive,0.4019
+84.977, I am now in drive.,neutral,0.0
+89.777, Maybe get moving forward.,neutral,0.0
+94.577, As I drove through them.,neutral,0.0
+99.377, We now have Sim Driver on.,neutral,0.0
+104.177, First on the scooter.,neutral,0.0
+108.977, Color scooter. Crossbody pack. Crossbody pack. Scooter? I'm not sure what that is. It's a scooter. It's a scooter.,negative,-0.2411
+113.777," Yeah, there's a cross-border bag.",positive,0.296
+118.577," It's driving, out of it.",neutral,0.0
+123.377, I see scooters on both sides of the road.,neutral,0.0
+128.177, This is audio between six participants in a simulated driving environment as they collaborate,neutral,0.0
+137.777," I saw her on the... Passing now. Ten o'clock. Yeah, that was correct.",positive,0.296
+147.377, Do we have a new target?,neutral,0.0
+152.177," Not yet. I hit target identified but... Yes, I'll...",positive,0.4019
+156.977, Okay. Those motorcyclists.,positive,0.2263
+161.777," Nicholas, we're giving me a call.",positive,0.34
+166.577," Pass on the roof. Pass, oh I see it, it's at 10 o'clock.",neutral,0.0
+171.377," Okay, yeah, I think he's on the left side.",positive,0.4767
+176.177, Passing now.,neutral,0.0
+180.977, Out. Part one.,neutral,0.0
+185.777, Why is car three so far away?,neutral,0.0
+190.577, So far behind car two.,neutral,0.0
+195.377, in,neutral,0.0
+204.977, This is part gap.,neutral,0.0
+209.777, Is the ODS working?,neutral,0.0
+214.577, Yes.,positive,0.4019
+219.377, Now you won't see anything but Jack you should see something in the passenger seat.,neutral,0.0
+224.177, It should be a wide car right now.,neutral,0.0
+228.977, Here.,neutral,0.0
+238.577, I see a camel.,neutral,0.0
+248.177, We got cars coming up. There's a driving...,neutral,0.0
+252.977, White car on the left.,neutral,0.0
+257.777, But is it? I think that was it. Yeah.,positive,0.4215
+262.577," Uh, we have another white SUV and...",neutral,0.0
+267.377," Yeah, passing that one on the left now.",positive,0.296
+276.977, Passing military checkpoint.,neutral,0.0
+286.577," Um, noise, uh...",neutral,0.0
+291.377, Track. I know where the track is. I'll be tracking. I'm covering it.,neutral,0.0
+296.177, Yeah. Yeah.,positive,0.5267
+300.977, Yep.,positive,0.296
+310.577," Jackie, do you feel like this has given you enough?",positive,0.3612
+320.177, I think it's enough.,neutral,0.0
+324.977, I mean I'm having fun but we can stop if you want to.,neutral,-0.0516
+329.777," Yeah, we can kill it.",negative,-0.5423
+334.577, All drivers will slowly put your foot on the brake.,neutral,0.0
+339.377, Command of breaking now.,neutral,0.0
+344.177, Please don't run through it.,positive,0.3182
+348.977, No! We've been rear-ended.,negative,-0.3595
+353.777, Good job team.,positive,0.4404
