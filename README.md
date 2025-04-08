@@ -16,10 +16,10 @@ The second file, [data_manipulation.py](/final_scripts/data_manipulation.py), ta
 ## How to Run the Files
 
 1) Ensure you have all necessary libaries and dependencies before running the code in this repository. The required libraries can be found [here](/requirements.txt).
-2) Download data_handling.py and data_manipulation.py from the [final_scripts folder](/final_scripts/) into the same directory. 
-3) Download/copy the folder of .mp4 videos you want to process into the same directory as data_handling.py and data_manipulation.py. You should name the folder "video_files" if you don't want to directly edit the 'folder_name' variable in data_handling.py. Otherwise, feel free to change 'folder_name' into whatever your folder is already named.
-4) Run data_handling.py first to obtain a csv file from your folder of .mp4 videos with all the necessary data to run data_manipulation.py. This csv file will be named after the last 4 characters of your first video file and end with "_analysis.csv". This will appear in a newly generated folder in the same directory called "transcripts". data_handling.py also automatically prints the contents of the transcript and the timestamps into the output for your convenience. .wav files for each corresponding .mp4 video file will also appear in a newly generated folder in the same directory called "audios".
-5) Run data_manipulation.py. This will take your newly generated csv file and create another csv file in the "transcripts" folder containing the time_bucket, word_count... negative_conf values. The histogram and stacked bar chart plots mentioned previously will also appear as a pop up.
+2) Download data_handling.py and data_manipulation.py from the [final_scripts folder](/final_scripts/) into the same directory.
+3) Ensure that your desired folders to contain your outputs exist.
+4) Run data_handling.py first to obtain a csv file from your folder of .mp4 videos with all the necessary data to run data_manipulation.py. You will be prompted to select an input file/folder and an output folder where your csv file will be placed. This csv file will be named after the last 4 characters of your first video file and end with "_analysis.csv". data_handling.py also automatically prints the contents of the transcript and the timestamps into the output for your convenience. 
+5) Run data_manipulation.py. You will be prompted to select an input csv file and an output folder where your csv file and plots will be placed. The new csv file will contain time_bucket, word_count... negative_conf values. The histogram and stacked bar chart plots mentioned previously will also appear as a pop up.
 
 ## Challenges
 
@@ -34,3 +34,5 @@ This was built in python using ffmpeg for video to audio conversion, pydub for c
 
 All information on testing can be found in the testing folder. In particular, the testing documentation can be found 
 [here](/testing/testing_docu.txt).
+
+You can view expected output examples, such as the transcript and plots in the [results folder](/results).
