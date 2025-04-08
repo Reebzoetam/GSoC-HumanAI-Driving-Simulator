@@ -30,7 +30,7 @@ Additionally, ensuring that the data was presented in a readable plot was also a
 Finally, a great deal of time was also invested into fine tuning the parameters for chunking based on silence, whisper's transcription, and sentiment analysis. This involved tweaking multiple parameters such as the silence threshold, silence length, providing a prompt for whisper, changing the threshold for no_speech_prob with whisper's transcription, and changing the threshold values for positive/negative/neutral sentiment identifications based on previous results.
 
 ## Repository Documentation
-This was built in python using ffmpeg for video to audio conversion, pydub for chunking based on silence, openapi's whisper for audio transcription, Vader NLP for more fine-grained sentiment analysis, and matplotlib for data visualisation. More details about the various libraries and apis used can be found in the requirements.txt file [here](/requirements.txt).
+This was built in python using ffmpeg for video to audio conversion, pydub for chunking based on silence, openapi's whisper for audio transcription, Vader Sentiment for more fine-grained sentiment analysis, and matplotlib for data visualisation. More details about the various libraries and apis used can be found in the requirements.txt file [here](/requirements.txt).
 
 All information on testing can be found in the testing folder. In particular, the testing documentation can be found 
 [here](/testing/testing_docu.txt).
