@@ -8,11 +8,8 @@ openai-whisper==20240930:
 - used to transcribe the audio in transcribe_audio()
 - and to generate timestamps relating to each transcribed phrase
 
-hugging face transformer: https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment, model = twitter-roberta-base-sentiment
-transformers==4.50.3
-- used to classify the sentiment of the transcribed text phrase by phrase in analyze_segment_sentiment()
-- as well as obtain confidence scores for each sentiment classification
-- chose this transformer because it was trained on tweets, which are similar to natural human speech
+ntlk==3.8.1:
+- for VADER Sentiment analysis 
 
 tempfile - preinstalled:
 - used to create a temporary directory to store the audio chunks and transcriptions in process_video()
